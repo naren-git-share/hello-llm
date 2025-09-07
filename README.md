@@ -1,71 +1,89 @@
-# Tiny LLM Math Sequence – End-to-End Local Python Demo
+# Tiny LLM Math Predictor
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.2-orange)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green)
+## Overview
+Tiny LLM Math Predictor is a minimal transformer-based language model trained to predict the next number in simple arithmetic sequences. The project demonstrates how to train, save, and serve a tiny LLM using PyTorch and FastAPI, with a clean separation between training, model definition, and serving.
 
-**A minimal, GPU-accelerated, local LLM built in Python to predict simple arithmetic sequences.**  
-This project demonstrates the **full lifecycle of a tiny transformer LLM**: training, hosting via FastAPI, and visualizing embeddings and attention maps — all on a single machine.
-
----
-
-## Table of Contents
-
-- [Project Overview](#project-overview)  
-- [Features](#features)  
-- [Installation](#installation)  
-- [Usage](#usage)  
-- [Project Structure](#project-structure)  
-- [How It Works](#how-it-works)  
-- [Visualizations](#visualizations)  
-- [Learning Outcomes](#learning-outcomes)  
-- [Keywords](#keywords)  
-
----
-
-## Project Overview
-
-This project is designed for developers and data enthusiasts who want to **understand transformer-based LLMs locally**, without relying on cloud APIs or large-scale models.  
-
-The model predicts the **next number in simple arithmetic sequences**.  
-Input: 1, 3 → Predicted next: 5.  
-Input: 5, 10 → Predicted next: 15.  
-
-It demonstrates **end-to-end LLM workflow**:  
-
-1. Training a tiny transformer from scratch.  
-2. Saving weights safely using `state_dict`.  
-3. Hosting via FastAPI for local REST API queries.  
-4. Visualizing hidden embeddings and attention maps.  
-
----
+## Repository Structure
+- `model.py`            : TinyLLM class and token mappings
+- `train.py`            : Training script
+- `serve.py`            : FastAPI server for predictions
+- `visualize.py`        : Visualize embeddings and attention
+- `tiny_llm_math_state.pth`  : Saved model weights
+- `README.md`
 
 ## Features
+- Predict the next number in simple sequences like `1,3 -> 5` or `5,10 -> 15`
+- Clean separation of model, training, and serving
+- Safe weight loading with `weights_only=True` to avoid PyTorch pickle security warnings
+- Optional visualization of embeddings and attention maps
+- Lightweight and suitable for local experimentation
 
-- Minimal LLM with **single transformer block** and multi-head attention.  
-- **State_dict-based model saving** for safe loading.  
-- GPU acceleration via PyTorch + CUDA (optional).  
-- REST API hosting with FastAPI — query via browser.  
-- Interactive visualization of embeddings and attention maps.  
-- Easy-to-extend for more complex sequences or operations.  
+## Usage
 
----
-
-## Installation
-
-> Requires [Conda](https://docs.conda.io/en/latest/) and Python 3.12.11+  
-
+### 1️⃣ Train the Model
 ```bash
-# 1. Clone repository
-git clone https://github.com/yourusername/tiny-llm-math.git
-cd tiny-llm-math
+python train.py
+```
+Trains the TinyLLM on simple arithmetic sequences.
+Saves weights to `tiny_llm_math_state.pth`.
 
-# 2. Create Conda environment
-conda create -n PyTinyLLMMath python=3.12.11 -y
+### 2️⃣ Host the Model via REST API
+```bash
+uvicorn serve:app --reload
+```
+Open your browser or use curl to test:
+```
+http://127.0.0.1:8000/predict?numbers=1,3
+http://127.0.0.1:8000/predict?numbers=5,10
+```
+Returns JSON with predicted next number, e.g., `{"next_number": 5}`
+
+### 3️⃣ Visualize Embeddings & Attention
+```bash
+python visualize.py
+```
+Prints embedding vectors for the input sequence and plots attention maps.
+
+## Examples
+- Input: `1,3` → Predicted next: `5`
+- Input: `5,10` → Predicted next: `15`
+- Input: `2,4` → Predicted next: `6`
+- Input: `3,6` → Predicted next: `9`
+
+## Requirements
+- Python 3.12+
+- PyTorch
+- FastAPI
+- Uvicorn
+- Matplotlib (for visualization)
+
+## Getting Started
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd tiny_llm_math
+```
+2. Create a Conda environment:
+```bash
+conda create -n PyTinyLLMMath python=3.12
 conda activate PyTinyLLMMath
+```
+3. Install dependencies:
+```bash
+pip install torch fastapi uvicorn matplotlib
+```
+4. Train the model:
+```bash
+python train.py
+```
+5. Start the server:
+```bash
+uvicorn serve:app --reload
+```
+6. Test predictions via browser or curl.
 
-# 3. Install PyTorch with CUDA support
-conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
+## Notes
+- Always train before serving. The server expects `tiny_llm_math_state.pth`.
+- Visualization is optional and purely for inspecting embeddings and attention weights.
+- Lightweight model designed for learning and experimentation, not production-scale LLM.
 
-# 4. Install additional dependencies
-pip install fastapi uvicorn matplotlib
