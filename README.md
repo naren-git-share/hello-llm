@@ -80,8 +80,8 @@ python train.py
 ```bash
 uvicorn serve:app --reload
 ```
-6. Test predictions via browser or curl.
-
+6. Test predictions via browser or curl.  
+http://127.0.0.1:8000/predict?numbers=1,2
 ## Notes
 - Always train before serving. The server expects `tiny_llm_math_state.pth`.
 - Visualization is optional and purely for inspecting embeddings and attention weights.
